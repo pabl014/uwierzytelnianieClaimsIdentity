@@ -10,6 +10,7 @@ namespace uwierzytelnianieClaimsIdentity.Models
 		public DateTime date { get; set; }
 		public int? userNumber { get; set; }
 
+		public Search() { }
 		public Search(string Name, int Year)
 		{
 			name = Name;
