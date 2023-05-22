@@ -8,7 +8,8 @@ namespace uwierzytelnianieClaimsIdentity.Models
 		public string? name { get; set; }
 		public int year { get; set; }
 		public DateTime date { get; set; }
-		public int? userNumber { get; set; }
+		public string? userNumber { get; set; }
+		public string? userLogin { get; set; }
 
 		public Search() { }
 		public Search(string Name, int Year)
@@ -30,5 +31,16 @@ namespace uwierzytelnianieClaimsIdentity.Models
 			}
 		}
 
+		public string shortSentence()
+		{
+            if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0))
+            {
+                return "przestepny";
+            }
+            else
+            {
+                return "nieprzestepny";
+            }
+        }
 	}
 }

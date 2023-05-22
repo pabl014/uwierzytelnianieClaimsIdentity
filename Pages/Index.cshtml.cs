@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using uwierzytelnianieClaimsIdentity.Data;
 using uwierzytelnianieClaimsIdentity.Models;
+using Newtonsoft.Json;
+using System;
 namespace uwierzytelnianieClaimsIdentity.Pages
 {
 	public class IndexModel : PageModel
@@ -14,12 +16,15 @@ namespace uwierzytelnianieClaimsIdentity.Pages
 
 		public Search search { get; set; } = new Search();
 
-		private readonly SearchContext _searchContext;
+        private readonly IHttpContextAccessor _contextAccessor; // odczyt statusu zalogowania
 
-		public IndexModel(ILogger<IndexModel> logger, SearchContext context)
+        private readonly SearchContext _searchContext;
+
+		public IndexModel(ILogger<IndexModel> logger, SearchContext context, IHttpContextAccessor contextAccessor)
 		{
 			_logger = logger;
 			_searchContext = context;
+			_contextAccessor = contextAccessor;	
         }
         public void OnGet()
 		{
@@ -43,7 +48,14 @@ namespace uwierzytelnianieClaimsIdentity.Pages
 			search.year = year;
 			search.date = DateTime.Now;
 
-			ViewData["message"] = "1";
+            if (_contextAccessor.HttpContext.User.Identity.IsAuthenticated)
+            {
+                var user_id = _contextAccessor.HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+                search.userNumber = user_id.Value;
+                search.userLogin = _contextAccessor.HttpContext.User.Identity.Name;
+            }
+
+            ViewData["message"] = "1";
 			if (search != null)
 			{
                 checkIfStart = true;
